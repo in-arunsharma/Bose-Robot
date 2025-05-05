@@ -4,7 +4,6 @@
 - [ ] Arun
 - [x] Domínguez
 - [x] Souto
-- [ ] Sáez
 - [x] Chen
 
 ## 🎯 What We Did Today
