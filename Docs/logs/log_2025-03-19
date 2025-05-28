@@ -1,0 +1,41 @@
+# 🛠️ Daily Progress Log — 2025-03-19
+
+## 👥 Team Members Present
+- [x] Arun
+- [x] Domínguez
+- [x] Souto
+- [x] Chen
+
+## 🎯 What We Did Today
+- Revisited our initial concept and brainstormed alternative locomotion methods.
+- Decided to pivot to a stair-climbing design using two helical (spiral) wheels mounted on a stable base.
+- Selected and confirmed the key hardware components for this new configuration.
+
+## 💡 Decisions Made
+| Topic               | Decision                                   | Why                                                  |
+|---------------------|--------------------------------------------|------------------------------------------------------|
+| Locomotion mechanism           | Two helical (spiral) wheels paired with a rigid base                                                                                | Helical wheels provide continuous contact on stair edges, enabling smooth vertical climbs               |
+| Motor driver                   | Dual DC motor driver DRV8833                                                                                                         | Compact, efficient, and fully compatible with our chosen micro metal gear motors                         |
+| Controller                     | Raspberry Pi 4 Model B (4 GB RAM)                                                                                                    | Sufficient processing power for image capture, SLAM, and motion control algorithms                       |
+| Vision sensor                  | Raspberry Pi Camera v2 (8 MP)                                                                                                        | High-resolution images for stair detection and mapping                                                  |
+| Drive motors                   | Micro Metal LP motors with 250:1 gearboxes                                                                                            | High torque output needed to drive helical wheels up inclines                                            |
+| Power source                   | LiPo 2S battery (1100 mAh, 7.4 V, 120C)                                                                                               | High discharge rate for sustained motor operation                                                        |
+| Voltage regulation             | S13V30F5 5 V DC–DC converter (3 A)                                                                                                    | Provides stable 5 V rail for Raspberry Pi and sensors                                                    |
+| Obstacle detection             | HC-SR04 ultrasonic distance sensor                                                                                                    | Reliable short-range obstacle/stair edge detection                                                        |
+| Inertial sensing               | MPU-6050 3-axis gyroscope & triaxial accelerometer (I²C, 3–5 V)                                                                        | Measures pitch/roll to assist in balance control when transitioning between stair steps                  |
+
+## 🧪 What We Tested
+- Reviewed mechanical feasibility of mounting helical wheels on the existing chassis.  
+- Verified compatibility of DRV8833 driver with Micro Metal LP motors in simulation.
+
+## 🔧 Problems Faced
+- Ensuring sufficient ground clearance for the helical wheels during flat-terrain traversal.  
+- Balancing weight distribution to prevent front or rear tipping when climbing stairs.  
+
+## 📌 Next Steps
+1. Design and 3D-print a mounting bracket for the helical wheels and motor assemblies.  
+2. Prototype the base frame in CAD, incorporating battery and electronics compartments.  
+3. Write and test low-level motor control routines for synchronized helical-wheel rotation.  
+4. Plan initial physical trials on a demo stair module (3–5 steps).
+
+---
