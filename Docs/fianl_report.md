@@ -1,7 +1,7 @@
 # Bose: A Stair-Climbing Robot for Hybrid Terrain Navigation
 
 **Authors:** Arun Sharma, Pau Domínguez Ruiz, Gerard Souto Eslava, Chengjie Peng Lin  
-**Affiliation:**
+**Affiliation:**  
 Universitat Autònoma de Barcelona (UAB)  
 Bachelor's Degree in Computer Engineering  
 Course: Robotics, Language and Planning (Spring 2025)  
