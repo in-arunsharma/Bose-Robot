@@ -29,7 +29,7 @@ This format separates final decisions for clarity, traceability, and report inte
 Every decision entry in this file must follow this structure:
 
 ```markdown
-## 📅 YYYY-MM-DD — [Clear, Specific Title]
+## YYYY-MM-DD — [Clear, Specific Title]
 
 **Topic:** [Component, concept, or design area]  
 **Decision:** [Final choice made — objective and unambiguous]  
@@ -40,7 +40,5 @@ Every decision entry in this file must follow this structure:
 **Alternatives Considered:**  
 - [Alternative 1 — why rejected]  
 - [Alternative 2 — why rejected]  
-**Related Logs:** [`log_YYYY-MM-DD.md`](./logs/log_YYYY-MM-DD.md)```
+**Related Logs:** [`log_YYYY-MM-DD.md`](./logs/log_YYYY-MM-DD.md)
 
-
----
