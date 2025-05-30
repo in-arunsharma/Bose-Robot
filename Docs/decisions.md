@@ -40,7 +40,7 @@ Every decision entry in this file must follow this structure:
 **Alternatives Considered:**  
 - [Alternative 1 — why rejected]  
 - [Alternative 2 — why rejected]  
-**Related Logs:** [`log_YYYY-MM-DD.md`](./logs/log_YYYY-MM-DD.md)
+**Related Logs:** [`log_YYYY-MM-DD.md`](./logs/log_YYYY-MM-DD.md)```
 
 
 ---
