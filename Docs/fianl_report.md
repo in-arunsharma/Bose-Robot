@@ -2,11 +2,11 @@
 
 **Authors:** Arun Sharma, Pau Domínguez Ruiz, Gerard Souto Eslava, Chengjie Peng Lin  
 **Affiliation:**
-Universitat Autònoma de Barcelona (UAB)
-Bachelor's Degree in Computer Engineering
-Course: Robotics, Language and Planning (Spring 2025)
-Supervised by Prof. Fernando Luis Vilariño Freire, Prof. Carlos Garcia Calvo, Prof. Vernon Stanley Albayeros Duarte
-In collaboration with the Open Labs of the School of Engineering (Laboratoris d’Innovació Oberta, UAB)
+Universitat Autònoma de Barcelona (UAB)  
+Bachelor's Degree in Computer Engineering  
+Course: Robotics, Language and Planning (Spring 2025)  
+Supervised by Prof. Fernando Luis Vilariño Freire, Prof. Carlos Garcia Calvo, Prof. Vernon Stanley Albayeros Duarte  
+In collaboration with the Open Labs of the School of Engineering (Laboratoris d’Innovació Oberta, UAB)  
 **Date:** 2025-06-27 (expected)
 
 ---
