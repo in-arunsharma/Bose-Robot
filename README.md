@@ -41,7 +41,7 @@ Design and build a functional prototype of a **stair-climbing robot** capable of
 Universitat Autònoma de Barcelona (UAB)  
 Bachelor's Degree in Computer Engineering  
 Course: Robotics, Language and Planning (Spring 2025)  
-Supervised by Prof. Fernando Luis Vilariño Freire, Prof. Carlos Garcia Calvo, Prof. Vernon Stanley Albayeros Duarte 
+Supervised by Prof. Fernando Luis Vilariño Freire, Prof. Carlos Garcia Calvo, Prof. Vernon Stanley Albayeros Duarte  
 In collaboration with the Open Labs of the School of Engineering (*Laboratoris d’Innovació Oberta, UAB*)
 
 ## 📄 Documentation
