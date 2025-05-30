@@ -13,31 +13,32 @@ Each decision is recorded in a structured, unambiguous format to ensure traceabi
 - Date  
 - Final decision  
 - Technical rationale  
-- Alternatives considered (if any)  
-- Links to relevant logs or experiments  
+- Alternatives considered  
+- Links to relevant logs or tests  
 
----
+**Rationale:**  
+During the first phase of the Bose robot project, multiple technical decisions were embedded inside daily progress logs (`/docs/logs/log_yyyy-mm-dd.md`). While those logs were valuable for tracking progress, they mixed together experiments, tests, and conclusions — making it difficult to identify and trace final, project-wide decisions.  
+This format separates final decisions for clarity, traceability, and report integration.  
 
-### Context
+**Alternatives Considered:**  
+- Embedding decisions in daily logs → too verbose and hard to trace  
+- GitHub Issues → overkill for the scope of the project  
+- Wiki page → lacks version control and log linkage  
 
-During the first phase of the Bose robot project, multiple technical decisions were embedded inside daily progress logs (`/docs/logs/log_yyyy-mm-dd.md`). While the logs were valuable for tracking work sessions, they mixed up trials, team presence, tests, and final outcomes — making it **difficult to identify confirmed project-wide decisions**.
-
----
-
-### Chosen Format
-
-We decided to create and maintain a separate file, `decisions.md`, using the following standardized entry structure:
+**Chosen Format:**  
+Every decision entry in this file must follow this structure:
 
 ```markdown
-## YYYY-MM-DD — [Clear, Specific Title]
+## 📅 YYYY-MM-DD — [Clear, Specific Title]
 
 **Topic:** [Component, concept, or design area]  
 **Decision:** [Final choice made — objective and unambiguous]  
 **Rationale:**  
 - [Technical reason 1]  
 - [Technical reason 2]  
-- [Relevant constraints considered: cost, compatibility, power, etc.]  
+- [Constraints: cost, size, compatibility, power, etc.]  
 **Alternatives Considered:**  
 - [Alternative 1 — why rejected]  
 - [Alternative 2 — why rejected]  
 **Related Logs:** [`log_YYYY-MM-DD.md`](./logs/log_YYYY-MM-DD.md)
+---
