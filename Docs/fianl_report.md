@@ -103,3 +103,14 @@ In collaboration with the Open Labs of the School of Engineering (Laboratoris d�
 - 3D model schematics
 - Calibration data
 - Full test logs
+
+
+### Appendix A: Component Datasheets (External Links)
+
+The following datasheets were referenced during the design and integration of the Bose robot. We provide official external links to ensure up-to-date and legal access. Local copies have not been included to respect distribution policies.
+
+- [MPU-6050 – TDK InvenSense](https://)
+- [MG996R Servo – TowerPro](https:/)
+- [RPLIDAR C1 – Slamtec](https)  
+
+> ⚠️ Note: The availability of external links is not guaranteed long-term. We recommend saving personal copies for archival or internal use.
