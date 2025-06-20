@@ -3,14 +3,6 @@
 **Arun Sharma**, **Pau Domínguez Ruiz**, **Gerard Souto Eslava**, and **Chengjie Peng Lin**  
 School of Engineering, Universitat Autònoma de Barcelona, 08193 Bellaterra, Spain^[This project was completed as part of the bachelor’s course *Robotics, Language and Planning* (Spring 2025) in the Bachelor’s Degree programme in Computer Engineering.]
  
-**Affiliation:**  
-Universitat Autònoma de Barcelona (UAB)  
-Bachelor's Degree in Computer Engineering  
-Course: Robotics, Language and Planning (Spring 2025)  
-Supervised by Prof. Fernando Luis Vilariño Freire, Prof. Carlos Garcia Calvo, Prof. Vernon Stanley Albayeros Duarte  
-In collaboration with the Open Labs of the School of Engineering (Laboratoris d’Innovació Oberta, UAB)  
-**Date:** 2025-06-27 (expected)
-
 ---
 
 ## Abstract
