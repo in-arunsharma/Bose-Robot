@@ -55,6 +55,17 @@ PackBot 510 [1],[2] typifies track-based climbers: excellent adhesion and load c
 Quadrupeds such as ANYmal [3] or Boston Dynamics Spot rival human stair speed (0.5 m s⁻¹) and handle irregular steps. However, they rely on 12–18 Series Elastic Actuators and GPU-class onboard computing, pushing cost to USD 75 k+.
 
 ### 2.7 Design Choice  
+
+| Architecture | Iconic robot (ref) | Step height tested | Speed on 17 cm stairs | Cost tier | Key drawbacks |
+|--------------|-------------------|--------------------|-----------------------|-----------|---------------|
+| Pivot-hoist  | URBOT [4]         | 18 cm              | 0.10 m s⁻¹ (one step / 8 s) | $$ | High torque, cycle time |
+| Pure wheels  | Asguard V2 [5]    | 15 cm              | 0.03 m s⁻¹            | $  | Slips on smooth treads |
+| Rocker-bogie | MER rover [6]     | 22 cm (lab)        | 0.05 m s⁻¹            | $$ | Heavy, 12 bearings |
+| Tri-wheel    | Curved-spoke [7]  | 17 cm              | 0.10 – 0.12 m s⁻¹     | $  | 10 N·m peak torque |
+| Tracks       | PackBot 510 [1]   | 20 cm              | 0.04 m s⁻¹            | $$$ | 10 kg chassis |
+| Quadruped    | ANYmal [3]        | 18 cm              | 0.5 m s⁻¹             | $$$$ | 12 SEAs, GPU |
+Table 1
+
 Considering the above, the **helical tri-wheel** offers the best cost-to-performance ratio for our constraints: (i) continuous ascent at ≈0.08 m s⁻¹, doubling tracked alternatives; (ii) only two drive motors; (iii) fabrication via 3 mm plywood laser-cuts within a USD 500 budget. We therefore adopt a spiral tri-helix wheel combined with retractable micro-wheels for flat terrain.
 
 ---
