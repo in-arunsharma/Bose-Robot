@@ -1,6 +1,8 @@
 # Bose: A Stair-Climbing Robot for Hybrid Terrain Navigation
 
-**Authors:** Arun Sharma, Pau Domínguez Ruiz, Gerard Souto Eslava, Chengjie Peng Lin  
+**Arun Sharma**, **Pau Domínguez Ruiz**, **Gerard Souto Eslava**, and **Chengjie Peng Lin**  
+School of Engineering, Universitat Autònoma de Barcelona, 08193 Bellaterra, Spain^[This project was completed as part of the bachelor’s course *Robotics, Language and Planning* (Spring 2025) in the Bachelor’s Degree programme in Computer Engineering.]
+ 
 **Affiliation:**  
 Universitat Autònoma de Barcelona (UAB)  
 Bachelor's Degree in Computer Engineering  
@@ -138,6 +140,14 @@ Considering the above, the **helical tri-wheel** offers the best cost-to-perform
 ## 12. Conclusion
 
 ---
+
+## Acknowledgment
+The authors thank Prof. Fernando L. Vilariño Freire, Prof. Carlos G. Calvo, and Prof. Vernon S. Albayeros Duarte for supervision and guidance.  
+This work was carried out in collaboration with the Open Labs of the School of Engineering (Laboratoris d’Innovació Oberta, UAB).
+
+*Report version:* 27 Jun 2025 (expected).
+---
+
 ## References
 
 [1] R. R. Murphy, J. L. Burke, and M. D. Rogers, “Trial by Fire: Activities of the Rescue Robots at the World Trade Center from 11 to 21 September 2001,” *IEEE Robotics and Automation Magazine*, vol. 11, no. 3, pp. 50–61, Sep. 2004. doi:[10.1109/MRA.2004.1337826](https://doi.org/10.1109/MRA.2004.1337826)
