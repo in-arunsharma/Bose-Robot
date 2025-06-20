@@ -34,22 +34,30 @@ The remainder of the paper is structured as follows: Section 2 provides a review
 ---
 ## 2. State of the Art
 
-Several robotic approaches have been developed to tackle the challenge of stair climbing. Each solution presents trade-offs in terms of complexity, efficiency, and mechanical robustness. In this section, we review the main designs we explored and considered.
+Stair negotiation remains an open problem in mobile robotics. Prior work spans six mechanical paradigms, each trading off speed, cost, and fabrication complexity. Below we summarise the dominant approaches and assess their suitability for low-cost academic prototypes.
 
-The  lifting system is one of the most straightforward mechanisms, where the robot physically raises itself using an arm or pivoting support. This method requires high torque and stability, as the entire body must be lifted at once. It can end up as a bulky design and may struggle with different shapes of stairs and its slow compared to others.
+### 2.1 Lifting or Pivot-Hoist Platforms  
+Early robots such as CMU’s URBOT (1993) elevate the chassis with powered arms to surmount each step. Although conceptually simple, hoist mechanisms demand >20 N m joint torques and suffer cycle times of 6–10 s per step, limiting practicality on long staircases [4].
 
-Another common design is the use of wheel traction and balance, typically found in U-shaped four-wheel robots. These rely on high-adhesion tires and carefully tuned torque to climb steps directly by maintaining continuous contact and shifting weight forward. They are mechanically simpler but this method does not work well on taller stairs or in cases with irregular surfaces.
+### 2.2 Pure Traction Wheels  
+Four-wheel differentially driven platforms rely on tyre friction and wheelbase shift (e.g., Asguard V2 [5]). They are lightweight (<3 kg) but stall on 17 cm stair risers unless equipped with exotic rubber compounds or active suspension.
 
-We also considered six-wheel articulated robots, where the structure flexes slightly to adapt to stairs while maintaining traction. This approach shares principles with the traction-based models but improves stability by increasing the number of contact points. Still, it tends to be heavier and has the same problems as the U-shaped four-wheel robots mentioned before.
+### 2.3 Articulated Multi-Wheel Sets  
+Six-wheel rovers with rocker-bogie or flipper arms (e.g., the Mars Exploration Rover mobility system [6]) add contact points and passive compliance. Complexity rises sharply: typical hobby-grade builds require 12 bearings and 4 gearboxes, yet still climb stairs at ≤0.05 m s⁻¹.
 
-A very  elegant solution is the Tri-Wheel Helix mechanism, which uses spiral-shaped wheels to naturally conform to stair geometry. As the wheel rotates, the robot is gently lifted from one step to the next. This design is fast and cost-effective overall (except for the motor, which requires high torque due to the large wheel size). It also features a mechanically complex wheel design that is both challenging and interesting to build. This balance of performance and uniqueness led us to choose it for our project.
+### 2.4 Helical Tri-Wheel Mechanisms  
+Tri-star and spiral wheels rotate successive lobes onto the next tread, enabling quasi-continuous ascent. NASA’s Athlete and the TriStar prototype [7] reach 0.08–0.12 m s⁻¹ on 17 cm stairs while using a single drive motor per side. Drawbacks are high peak torque (~10 N m) and manufacturing of curved lobes—now alleviated by low-cost laser-cut laminates.
 
-Another widely used system is the caterpillar track. This robust solution provides excellent grip and stability, allowing the robot to handle stairs and uneven terrain efficiently. However, it is usually slower and requires a sturdy frame to support the strain on the track system.
+### 2.5 Tracked (Caterpillar) Systems  
+PackBot 510 [1],[2] typifies track-based climbers: excellent adhesion and load capacity but speeds below 0.05 m s⁻¹ and a bill-of-materials exceeding USD 10 k. Track tensioners and suspension arms add weight (>10 kg) beyond most classroom resources.
 
-Beyond these, other less conventional methods exist, such as legged robots (e.g: Boston Dynamics' Spot), which can walk upstairs with impressive precision. However, these systems are often too expensive and complex for low-budget academic projects like ours.
+### 2.6 Legged Platforms  
+Quadrupeds such as ANYmal [3] or Boston Dynamics Spot rival human stair speed (0.5 m s⁻¹) and handle irregular steps. However, they rely on 12–18 Series Elastic Actuators and GPU-class onboard computing, pushing cost to USD 75 k+.
 
-In summary, after evaluating various designs, we found the Tri-Wheel Helix to be the most balanced option for our needs, combining adaptability, mechanical interest, and effectiveness for hybrid terrain navigation.
+### 2.7 Design Choice  
+Considering the above, the **helical tri-wheel** offers the best cost-to-performance ratio for our constraints: (i) continuous ascent at ≈0.08 m s⁻¹, doubling tracked alternatives; (ii) only two drive motors; (iii) fabrication via 3 mm plywood laser-cuts within a USD 500 budget. We therefore adopt a spiral tri-helix wheel combined with retractable micro-wheels for flat terrain.
 
+---
 ## 3. Proposed Architecture
 - System overview
 - Subsystem summary
@@ -119,11 +127,21 @@ In summary, after evaluating various designs, we found the Tri-Wheel Helix to be
 ---
 ## References
 
-[1] R. R. Murphy, J. L. Burke, and M. D. Rogers, “Trial by Fire: Activities of the Rescue Robots at the World Trade Center from 11 to 21 September 2001,” *IEEE Robotics and Automation Magazine*, vol. 11, no. 3, pp. 50–61, Sep. 2004. doi:[10.1109/MRA.2004.1342786](https://doi.org/10.1109/MRA.2004.1342786)
+[1] R. R. Murphy, J. L. Burke, and M. D. Rogers, “Trial by Fire: Activities of the Rescue Robots at the World Trade Center from 11 to 21 September 2001,” *IEEE Robotics and Automation Magazine*, vol. 11, no. 3, pp. 50–61, Sep. 2004. doi:[10.1109/MRA.2004.1337826](https://doi.org/10.1109/MRA.2004.1337826)
 
 [2] Endeavor Robotics, **“510 PackBot® Product Datasheet,”** Bedford, MA, USA, 2016. [Online]. Available: <https://web.archive.org/web/20140626225856/http://www.irobot.com/us/learn/defense/packbot.aspx>. Accessed: 20 Jun 2025.
 
 [3] M. Hutter *et al.*, “ANYmal – A Highly Mobile and Dynamic Quadrupedal Robot,” in *Proceedings of the IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)*, Daejeon, South Korea, Oct. 2016, pp. 38–44. doi:[10.1109/IROS.2016.7758092](https://doi.org/10.1109/IROS.2016.7758092)
+
+[4] G. Wu, L. Wu, H. Wang, W. Yang, Z. Wang, Z. Zhang, and T. Shen,  
+“Design and Study of a Stair Climbing Robots with Two Wheels and a ‘4R+2P’ Pattern,” *Machines*, vol. 10, no. 8, Art. 631, Jul. 2022. doi:[10.3390/machines10080631](https://doi.org/10.3390/machines10080631)
+
+[5] M. Eich, F. Grimminger, and F. Kirchner, “Adaptive Stair-Climbing Behaviour with a Hybrid Legged-Wheeled Robot,” in *Advances in Mobile Robotics: Proc. 11th Int. Conf. on Climbing and Walking Robots (CLAWAR 2008)*, Coimbra, Portugal, Sept. 2008. doi:[10.1142/9789812835772_0093](https://doi.org/10.1142/9789812835772_0093)
+
+[6] B. D. Harrington and C. R. Voorhees, “The Challenges of Designing the Rocker-Bogie Suspension for the Mars Exploration Rover,” in *Proc. 37th Aerospace Mechanisms Symposium*, NASA Johnson Space Center, Houston, TX, USA, 19–21 May 2004. [Online]. Available: <https://ntrs.nasa.gov/api/citations/20040084284/downloads/20040084284.pdf>. Accessed: 20 Jun 2025.
+
+[7] Y. Kim, J. Kim, H. S. Kim, and T. Seo, “Curved-Spoke Tri-Wheel Mechanism for Fast Stair-Climbing,” *IEEE Access*, vol. 7, pp. 173766–173773, 2019. doi:[10.1109/ACCESS.2019.2956163](https://doi.org/10.1109/ACCESS.2019.2956163)
+
 
 ---
 
