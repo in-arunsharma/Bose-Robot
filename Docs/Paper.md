@@ -196,8 +196,47 @@ This work was carried out in collaboration with the Open Labs of the School of E
 
 The following datasheets were referenced during the design and integration of the Bose robot. We provide official external links to ensure up-to-date and legal access. Local copies have not been included to respect distribution policies.
 
-- [MPU-6050 – TDK InvenSense](https://)
-- [MG996R Servo – TowerPro](https:/)
-- [RPLIDAR C1 – Slamtec](https)  
+
+* [Raspberry Pi 4B - Brain of Robot](https://datasheets.raspberrypi.com/rpi4/raspberry-pi-4-product-brief.pdf), [Reduced Schematics](https://datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf)
+
+* [MD25 Dual Motor Controller - Helix Wheels and Encoders](https://www.robot-electronics.co.uk/htm/md25tech.htm)
+
+* [L298N Dual Motor Controller - Retractable Wheel Motors](https://www.handsontec.com/dataspecs/L298N%20Motor%20Driver.pdf)
+
+* [PCA9685 Servo Controller - 16 Channels](https://www.nxp.com/docs/en/data-sheet/PCA9685.pdf)
+
+* [S13V30F5 Pololu DC Step-Up/Step-Down Regulator - 5V 3A](https://www.pololu.com/product/4082)
+
+* [XL4015 DC Voltage Converter - Step-Down Regulator](https://solectroshop.com/en/convertidor-dc-step-down/647-xl4015-convertidor-voltimetro-dc-5a-75w-step-down-regulador-dc-lm2596-5905323239142.html), [LM2596 Datasheet](https://www.ti.com/lit/ds/symlink/lm2596.pdf)
+
+* [3mm LEDs - Blue, Red, Green](https://www.make-it.ca/3mm-led-specifications/), [Farnell Datasheet](https://www.farnell.com/datasheets/1626756.pdf), [CETRONIC Datasheet](https://descargas.cetronic.es/WW03A3SRP4-N2.pdf)
+
+* [RPLiDAR C1 - 360° Laser Range Scanner](https://bucket-download.slamtec.com/2d4664be9f9f5c748f3b608f2cf1862962b168eb/SLAMTEC_rplidar_datasheet_C1_v1.1_en.pdf), [User Manual](https://bucket-download.slamtec.com/9ab6ef03f6f98de7ee825a0c403cffc2a6bb5f22/SLAMTEC_rplidarkit_usermanual_C1_v1.1_en.pdf), [Protocol](https://bucket-download.slamtec.com/c5971f2703a8d014f3925694d798ea490a370efa/LR001_SLAMTEC_rplidar_S&C%20series_protocol_v2.8_en.pdf)
+
+* [HC-SR04 Ultrasonic Distance Sensor](https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf), [User Guide](https://www.elecfreaks.com/blog/post/hc-sr04-ultrasonic-module-user-guide.html)
+
+* [Raspberry Pi Camera Module V2 - 8MP](https://www.raspberrypi.com/products/camera-module-v2/), [Documentation](https://www.raspberrypi.com/documentation/accessories/camera.html)
+
+* [MPU6050 - 3-Axis Gyroscope & Accelerometer](https://cdn.sparkfun.com/datasheets/Components/General%20IC/PS-MPU-6000A.pdf), [Sunfounder Guide](https://docs.sunfounder.com/projects/ultimate-sensor-kit/en/latest/components_basic/05-component_mpu6050.html)
+
+* [4700µF 16V Radial Electrolytic Capacitor - ELR47216](https://www.westfloridacomponents.com/mm5/graphics/Q04/NRWA472M16X31.pdf)
+
+* [Double Switch - Circuit Disconnect](https://vishaworld.com/products/robotic-switch)
+
+* [14.4V Battery - NASTIMA 2600mAh](https://www.amazon.com/-/es/NASTIMA-Reemplazo-bater%C3%ADa-2600mAh-compatible/dp/B089KGP8QH)
+
+* [Maxon Motor 110055 - Tri-Helix Wheels](https://www.maxongroup.com/medias/sys_master/root/9399155818526/Cataloge-Page-EN-172.pdf)
+
+* [Planetary Gearhead GP 16 A 157:1 - 118186](https://www.maxongroup.com/medias/sys_master/root/9406823858206/Cataloge-Page-EN-416.pdf)
+
+* [Encoder MEnc 13 16 CPT - 110778](https://www.maxongroup.com/medias/sys_master/root/8831077548062/2018EN-407-408.pdf)
+
+* [MG996R Servos - Retractable Wheels](https://components101.com/sites/default/files/component_datasheet/MG996R%20Datasheet.pdf)
+
+* [150:1 Micro Metal Gearmotor HP 6V](https://www.pololu.com/file/0J1487/pololu-micro-metal-gearmotors-rev-6-1.pdf)
+
+* [Push Button - Normally Open](https://components101.com/switches/push-button)
+
+* [MH Level Converter - 5V to 3.3V](https://www.pololu.com/product/2595/resources)
 
 > ⚠️ Note: The availability of external links is not guaranteed long-term. We recommend saving personal copies for archival or internal use.
