@@ -99,7 +99,31 @@ The software stack operates in a closed-loop configuration, with real-time feedb
 
 ## 4. Mechanical Design
 - Frame and chassis
-- Wheel configuration
+
+### 4.2 Wheel Configuration
+
+Bose employs a curved tri-helix wheel system, inspired by [10], that enables continuous stair climbing by transforming rotary motion into an ascending gait. Each wheel consists of three curved spokes spaced 120° apart, laser-cut from 4 mm plywood and laminated with two lateral reinforcement layers, yielding a 20 mm wide tread. At the contact point of each lobe, a rubber-patterned foam contact patch enhances traction and minimizes slippage on stair edges.
+
+To ensure phase synchrony during multi-step ascent, each curved lobe is mechanically coupled to a passive triangular stopper. These triangular components are formed from two stacked plywood layers (total 8 mm) and covered with transparent adhesive film to reduce friction. As a result, each stair climb begins from a stable, repeatable pose, improving the precision and linearity of center-of-rotation (CoR) trajectories.
+
+Following [10], we applied the kinematic analysis for optimal wheel geometry based on the most common stair dimensions in our operating environment: tread length l = 300 mm, riser height h = 160 mm, and segment angle θ₂ = 120°. The required parameters—hub radius r₁, lobe radius r₂, and spoke angle θ₁—are derived from:
+
+$$
+\begin{aligned}
+    l = r_2 \Bigl(\theta_2 - \frac{\sqrt{3}}{2}\Bigr) + r_1 \bigl(\sin \theta_1 - \sin(\theta_1 - \theta_2)\bigr) \\
+    h = \frac{3}{2} r_2 + r_1 \bigl(-\cos \theta_1 + \cos(\theta_1 - \theta_2)\bigr) \\
+    \frac{2}{3} \pi r_2 < l
+\end{aligned}
+$$
+
+Using the above, we selected r₂ = 143 mm, r₁ = 78 mm, and θ₁ = 36,33°, providing a CoR trajectory closely aligned with a straight line. The resulting wheel profile enables smooth, vibration-minimized stair climbing with high stability.
+
+Each wheel is driven by a Maxon DC motor coupled with a 157:1 planetary gearbox and an external 5:1 gear stage, yielding an effective reduction of 785:1. This provides sufficient torque to lift the robot’s mass (~5 kg) against gravity during step ascent. Encoders mounted on the drive shafts enable feedback control for velocity and position tracking.
+
+The wheels are fabricated using modular laser-cut geometry for rapid iteration, and mounted via keyed aluminum hubs onto the motor shafts. All components are fastened using M3 screws and epoxy-sealed at high-load points to ensure mechanical integrity during impact-rich stair traversal.
+
+> **Note:** A separate support system using retractable wheels enables efficient motion on flat terrain. This is discussed in Section 4.3.
+
 - Support mechanism
 - Mounting and integration
 ---
@@ -182,6 +206,7 @@ This work was carried out in collaboration with the Open Labs of the School of E
 
 [7] Y. Kim, J. Kim, H. S. Kim, and T. Seo, “Curved-Spoke Tri-Wheel Mechanism for Fast Stair-Climbing,” *IEEE Access*, vol. 7, pp. 173766–173773, 2019. doi:[10.1109/ACCESS.2019.2956163](https://doi.org/10.1109/ACCESS.2019.2956163)
 
+[10] Youngsoo Kim, Jongwon Kim, Hwa Soo Kim, and TaeWon Seo, “Curved-Spoke Tri-Wheel Mechanism for Fast Stair-Climbing,” *IEEE Access*, vol. 7, pp. 173 766–173 773, Nov. 2019. doi:[10.1109/ACCESS.2019.2956163](https://doi.org/10.1109/ACCESS.2019.2956163)
 
 ---
 
