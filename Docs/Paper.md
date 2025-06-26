@@ -98,7 +98,20 @@ The software stack operates in a closed-loop configuration, with real-time feedb
 ---
 
 ## 4. Mechanical Design
-- Frame and chassis
+
+The mechanical design of *Bose* plays a fundamental role in enabling its stair-climbing capabilities and hybrid-terrain adaptability. This section details the structural configuration, wheel layout, support elements, and component integration strategies that allow the robot to navigate architectural stairs and flat surfaces. Design priorities included maximizing torque transmission, minimizing total mass, ensuring manufacturability with low-cost materials, and providing structural stability during vertical ascent. Each subsystem—chassis, wheels, support mechanism, and electronics enclosure—is described in the following subsections.
+
+
+### 4.1 Frame and chassis
+The mechanical architecture of Bose was driven by the need for weight efficiency, spatial simplicity, and compatibility with stair-step geometries. The robot adopts a planar T-shaped frame layout, with the main electronics, drivetrain, and wheel mounts integrated into a single-layer chassis cut from 4 mm laser-cut plywood. Structural reinforcement and mounting were achieved via 3D-printed brackets and spacer blocks.
+
+The approximate overall dimensions of the chassis are 800 mm × 550 mm, with the long axis aligning with the direction of motion. The central crossbar serves as the load-bearing anchor for the helix wheel axles, while the rear extension (“tail”) provides pitch stability during ascent phase. To reduce flexion in this tail segment, four wooden reinforcement strips (15 mm × 4 mm × 500 mm) were bonded along the sides using cyanoacrylate adhesive.
+
+All delicate electronic components, including the Raspberry Pi, motor controllers (MD25, L298N), and I²C servo interface — are mounted inside a transparent acrylic enclosure fixed atop the central chassis. This enclosure is elevated approximately 15 mm above the frame base, allowing clearance for uneven PCB bottoms and screw heads. Mounting was achieved via machine screws on embedded 3D-printed spacers, avoiding vibrations and maintaining access for debugging and maintenance.
+
+The enclosure also provides the structural base for the LiDAR mast, which is elevated to a height that ensures the scan plane remains unobstructed by the rotating helix wheels. Sensor stands for the ultrasonic sensor and camera were likewise 3D-printed to specific angles and distances for optimal stair detection coverage.
+
+Load distribution is concentrated on the tri-helix wheel axis, which supports the primary mechanical torque and weight of the robot. There is no suspension or active vibration damping mechanism; however, empirical tests revealed minimal frame oscillations during both flat-ground and stair-climbing operation. This validates the suitability of plywood for the current prototype, where lightweight fabrication and rapid iteration were prioritized over ruggedization.
 
 ### 4.2 Wheel Configuration
 
@@ -124,19 +137,94 @@ The wheels are fabricated using modular laser-cut geometry for rapid iteration, 
 
 > **Note:** A separate support system using retractable wheels enables efficient motion on flat terrain. This is discussed in Section 4.3.
 
-- Support mechanism
-- Mounting and integration
+### 4.3 Support mechanism
+To enhance mobility on flat terrain, Bose incorporates a pair of rear-mounted retractable micro wheels driven by Pololu 150:1 gearmotors. These wheels are deployed via MG996R servos connected to custom 3D-printed arms. While the servos are not strong enough to lift the robot directly from a full rest state, a two-phase assistive strategy was developed to enable lifting:
+
+1. The robot begins with its tri-helix wheels at a tilted stance (single point of contact), leaving maximum clearance below the chassis.
+
+2. The servos lower the support arms and small wheels until they touch the ground.
+
+3. A slight rotation of the helix wheels shifts the chassis into a balanced two-point stance, allowing the support arms to passively hold the frame above ground using their longer geometry.
+
+The same principle is reversed to retract the wheels when stair traversal is re-activated. This lifting mechanism is controlled either automatically—through terrain sensing using vision and ultrasonic fusion—or manually using key-based remote commands during testing.
+
+The retractable arms are fabricated in PLA and are structurally designed to bear load by leaning against the underside of the base frame once lowered. This avoids relying entirely on servo torque. The support wheels themselves are surfaced with the same patterned rubber-foam grip material used on the tri-helix wheels to ensure consistent traction.
+
+The retractable support system significantly improves speed, power efficiency, and trajectory stability during flat-ground navigation, where helix rotation would otherwise introduce wobble and drag.
+
+### 4.4 Mounting and integration
+
+The physical integration of *Bose*'s components was optimized for modularity, structural safety, and ease of assembly. Custom 3D-printed housings were used to secure the main drive motors (Maxon 110055 with 157:1 gearheads), which are coupled to the tri-helix wheels via externally mounted 7:1 plastic reduction gears. The gear shafts are aligned using fixed axles embedded in the plywood chassis, with no suspension or bearing isolation—relying instead on the high torque and low RPM to ensure mechanical stability.
+
+Electronic components are installed inside a laser-cut acrylic enclosure, supported by precision-cut standoffs and M3 fasteners. This modular box enables rapid replacement of core modules such as the Raspberry Pi, motor drivers, and servo controller without disturbing the main frame. Wiring is routed cleanly using different colors for easy differenciation.
+
+Sensor elements, including the ultrasonic sensor, camera, and LiDAR, are mounted on **dedicated, height-adjustable PLA stands**. These mounts are designed to preserve calibration and alignment while remaining detachable for maintenance. All fixtures rely on screws or interlocking tabs rather than adhesives, in line with open-lab prototyping principles.
+
+The complete assembly strategy prioritizes rapid repair, physical robustness during stair traversal, and spatial separation between high-power and sensor-level subsystems.
+
 ---
 
 ## 5. Electronics and Sensors
-- Power system
-- Motor drivers
-- Main controller
-- Sensor list:
-  - IMU
-  - Encoders
-  - LIDAR
-  - Others
+The electronic system of *Bose* was designed to support high-torque actuation, multi-sensor terrain detection, and autonomous behavior within a compact, power-efficient embedded setup. All components interface directly with a Raspberry Pi 4B, which serves as the main controller running ROS 2 and coordinating sensor input, actuator control, and decision logic. Power is distributed via two independent buck converters, while onboard logic-level shifting ensures safe communication with 5 V peripherals. This section describes the power architecture, motor drivers, control hardware, and sensing subsystems integrated into the robot.
+
+### 5.1 Power System
+
+The entire robotic platform is powered by a **4-cell (4S) lithium-ion battery pack**, providing a nominal voltage of **14.4 V** and a capacity of **2200 mAh**. Power distribution is handled via two dedicated DC-DC converters:
+
+- An **S13V30F5 buck-boost regulator** delivers a fixed **5 V / 3 A** max output to power the Raspberry Pi 4B and all 5 V logic-level sensors, including the IMU, ultrasonic rangefinder, and I2C servo controller.
+- A high-current **XL4015 step-down regulator** supplies the necessary voltage and current for the retractable wheel motors and servo actuators.
+
+To protect the control subsystem against voltage dips during high-load transitions (e.g., simultaneous motor startup), a **4700 μF / 16 V electrolytic capacitor** is placed near the 5 V rail input of the Raspberry Pi. A double-switch mechanism isolates the battery pack from the full circuit for safety and debugging.
+
+---
+
+### 5.2 Motor Drivers
+
+The actuation system is divided into two independent motor driver circuits:
+
+- The **MD25 motor controller** is responsible for the two tri-helix drive motors. It communicates via I²C and internally manages encoder feedback and speed regulation. The MD25 also provides real-time battery voltage readout, which is used to control status indicators on the robot.
+- The **L298N H-bridge module** controls the retractable wheel motors using standard **PWM and GPIO signals** generated by the Raspberry Pi. Directional control and enable lines are mapped to dedicated pins, allowing dynamic activation and deactivation of the flat-ground drive system.
+
+All drivers are interfaced through open-source libraries, with ROS 2 nodes abstracting low-level communication. The MD25 is treated as a composite controller due to its integrated quadrature encoder decoding and internal PID logic.
+
+---
+
+### 5.3 Main Controller
+
+The entire system is orchestrated by a **Raspberry Pi 4B (4 GB RAM)** running **Ubuntu 22.04** with **ROS 2 Humble**. It handles all sensor acquisition, actuator control, terrain classification, SLAM computation, and decision-making onboard—no external microcontroller is used.
+
+To safely interface the Pi’s 3.3 V GPIO logic with 5 V peripherals, a **bi-directional MH level shifter** is used. This converts voltage levels for the **HC-SR04 ultrasonic sensor’s echo pin**, the **MPU6050’s optional INT pin**, and the **I²C bus**, which serves multiple 5 V sensors and controllers.
+
+The Pi communicates directly with:
+- MD25 (I²C)
+- PCA9685 (I²C)
+- L298N (PWM + GPIO)
+- Camera module (CSI)
+- RPLiDAR C1 (USB)
+- GPIO-driven peripherals (LEDs, push button)
+
+---
+
+### 5.4 Sensors
+
+#### IMU
+An **MPU6050 gyroscope and accelerometer** is connected via I²C, providing 6-DOF motion data. Although the module includes an INT pin, it is not used in the current implementation. The IMU is primarily employed for orientation estimation and future fall detection.
+
+#### Wheel Encoders
+Quadrature encoders are embedded in the Maxon drive motors and routed through the MD25 controller. Encoder ticks are read directly over I²C, enabling closed-loop velocity and displacement estimation during stair climbing.
+
+#### LIDAR
+An **RPLiDAR C1** unit provides 360º spatial mapping data via USB, interfaced using the official Slamtec SDK. It supports the SLAM and localization stack under ROS 2 and is physically mounted above the chassis to avoid interference from the rotating wheels.
+
+#### Ultrasonic Sensor
+An **HC-SR04 ultrasonic rangefinder** is used for stair detection in the forward direction. Its echo line is routed through the MH level shifter before reaching a Raspberry Pi GPIO pin to comply with 3.3 V logic tolerance.
+
+#### Camera
+The system includes a **Raspberry Pi Camera Module v2 (8 MP)** connected via CSI. It is used in terrain classification and stair detection through monocular vision and supports future upgrades such as AprilTag localization or CNN inference.
+
+#### Status LEDs and Push Button
+Four status LEDs (red, green, blue, and transparent) are connected via GPIO with current-limiting resistors and used to indicate motor states, battery level, or error conditions. A single normally-open push button is also connected to a GPIO input to trigger start/stop commands locally without requiring a remote interface.
+
 ---
 
 ## 6. Software Design
