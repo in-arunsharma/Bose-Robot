@@ -1,0 +1,42 @@
+# 🛠️ Daily Progress Log — 2025-06-24
+
+## 👥 Team Members Present
+- [x] Arun Sharma
+- [x] Pau Domínguez Ruiz
+- [x] Gerard Souto Eslava
+- [x] Chengjie Peng Lin
+
+## 🎯 What We Did Today
+
+* Documented on paper the current wheel configuration
+* Tested remote control of the main wheels
+* Observed erratic behavior in the large wheel motors — responses were nearly random when commands were sent
+* Identified a potential issue with the I²C communication causing this behavior
+* Noticed that the servos malfunctioned even when idle, likely due to software-related problems
+
+## 💡 Decisions Made
+
+| Topic                | Decision                                      | Why                                                    |
+|----------------------|-----------------------------------------------|--------------------------------------------------------|
+| Wheel control        | Investigate I²C issues                        | Motors behave unpredictably when receiving commands    |
+| Servo behavior       | Suspect software-related malfunction          | Servos misbehave without active input                  |
+| Documentation        | Paper-based layout of wheel configuration     | Clarifies current physical and logical setup           |
+
+## 🧪 What We Tested
+
+* Remote control of main wheels via software
+* Passive behavior of servos with no active commands
+* Wheel configuration review
+
+## 🔧 Problems Faced
+
+* Unstable motor control likely caused by I²C errors
+* Servos misbehaving even when not commanded — suspected software bug
+
+## 📌 Next Steps
+
+* Debug I²C communication and motor driver integration
+* Test servo behavior in isolation
+* Migrating configuration notes to digital format for report
+
+---
