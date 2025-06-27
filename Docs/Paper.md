@@ -481,13 +481,16 @@ Importantly, this project served as the first full-scale physical build for the 
 While Bose remains a prototype, the insights gained—including trade-offs between simplicity and functionality, the importance of material selection, and the challenges of real-world sensor fusion—lay a strong foundation for future iterations. Several team members are now considering the extension of this work into a dedicated undergraduate thesis project in the final year of the Computer Engineering degree, with the goal of achieving full autonomy, broader terrain generalization, and system miniaturization.
 
 In sum, Bose demonstrates that practical, affordable, and intelligent stair-climbing robots are feasible within the scope of undergraduate academic research, and that a carefully engineered blend of mechanical design, perception, and control logic can unlock new frontiers in assistive and mobile robotics.
+
 ---
 
 ## Acknowledgment
 The authors thank Prof. Fernando L. Vilariño Freire, Prof. Carlos G. Calvo, and Prof. Vernon S. Albayeros Duarte for supervision and guidance.  
 This work was carried out in collaboration with the Open Labs of the School of Engineering (Laboratoris d’Innovació Oberta, UAB).
 
-*Report version:* 22 Jun 2025 (expected).
+The authors also thank **Maxon Group Spain** and **Robot Electronics** for their prompt technical support regarding motor specifications and controller behavior during the development phase.
+
+*Report version:* 27 Jun 2025.
 ---
 
 ## References

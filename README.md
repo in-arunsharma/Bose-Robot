@@ -1,62 +1,112 @@
-#  Bose — Stair-Climbing Robot
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Stairs_icon.png" align="right" width="280" alt="Bose header"/>
 
-**Bose** is a stair-climbing robot designed to navigate hybrid environments (flat surfaces and stairs) using a custom mechanical design, onboard sensors, and embedded control logic. This repository contains the full documentation, source files, logs, and final report of the project.
+# Bose — Stair-Climbing Hybrid-Terrain Robot
 
-> ⚠️ **Disclaimer:** This project is currently in progress and under active development. All content in this repository is subject to change until the final delivery deadline in June 2025.
+**Bose** is a hybrid-terrain mobile robot capable of ascending stairs and navigating flat surfaces using a dual-locomotion system. It features custom tri-helix wheels for vertical movement and retractable micro-wheels for horizontal traversal. Designed as a university project in computer engineering, this prototype integrates multi-sensor perception and embedded control in a low-cost, laser-cut mechanical platform.
 
-## 📂 Repository Structure
+![ProjectStatus](https://img.shields.io/badge/status-in%20progress-yellow)
+![License](https://img.shields.io/badge/license-Academic--Use--Only-blue)
+
+
+## Table of Contents
+- [Overview](#overview)
+- [Objectives](#objectives)
+- [Repository Structure](#repository-structure)
+- [Key Features](#key-features)
+- [Documentation](#documentation)
+- [Project Status](#project-status)
+- [Team and Affiliation](#team-and-affiliation)
+- [Acknowledgment](#acknowledgment)
+- [License](#license)
+
+
+## Overview
+
+Bose is designed for indoor environments with stairs and flat ground. Its goal is to combine affordability, mechanical simplicity, and autonomy. Its locomotion system adapts in real time based on terrain using ultrasonic sensing, monocular SLAM, and encoder feedback. A Raspberry Pi 4B runs the entire stack under Ubuntu 22.04 + ROS 2 Humble.
+
+> 🧪 *This project was developed as part of the Robotics, Language and Planning course (Spring 2025), UAB.*
+
+
+## Objectives
+
+- Design a low-cost stair-climbing robot prototype
+- Combine mechanical and sensor-based terrain adaptation
+- Enable SLAM-based indoor navigation
+- Achieve smooth transitions between locomotion modes
+
+
+## Repository Structure
 ```bash
-├── docs/ # Project documentation
-│ ├── logs/ # Daily progress logs
-│ ├── media/ # Diagrams, photos, wiring images
-│ ├── decisions.md # Key technical and design decisions
-│ └── final_report.md # Final scientific-style report (Markdown)
+├── docs/                # Final report, design logs, decisions
+│   ├── logs/            # Daily development logs
+│   ├── media/           # Images, CAD screenshots, diagrams
+│   ├── decisions.md     # Engineering decisions with rationale
+│   └── final_report.md  # Academic paper (Markdown format)
 │
-├── software/ # Control software, scripts, configs
-│ └── ... # [To be added]
+├── software/            # Python scripts, ROS 2 nodes, control logic
 │
-├── media
+├── hardware/            # CAD files, wheel models, circuit diagrams
 │
-├── hardware/ # Mechanical models, schematics, STLs
-│ └── ... # [To be added]
-│
-└── README.md # Project overview (this file)
+└── README.md            # Project overview (this file)
 ```
 
-## 🎯 Project Objective
 
-Design and build a functional prototype of a **stair-climbing robot** capable of:
-- Smooth movement on flat terrain
-- Ascending and descending standard stairs
-- Reacting to terrain transitions using onboard sensors
+## Key Features
 
-## 🧑‍💻 Team
+- 🌀 **Tri-helix wheels** — laser-cut spiral geometry for stair ascent
+- 🤖 **Retractable wheel system** — servo-lifted micro wheels for ground mobility
+- 🧠 **Onboard autonomy** — Pi 4B with ROS 2 and sensor fusion
+- 👁️ **Monocular SLAM** — ORB-based tracking and sparse point cloud mapping
+- 📡 **Sensor suite** — LiDAR, camera, IMU, encoders, ultrasonic sensor
+- 🔧 **Low-cost fabrication** — plywood chassis, 3D-printed mounts
 
-- Arun Sharma
-- Pau Domínguez Ruiz
-- Gerard Souto Eslava
-- Chengjie Peng Lin
+
+## Documentation
+
+You can explore:
+- [`decisions.md`](docs/decisions.md) — rationale for major technical choices
+- [`logs/`](docs/logs) — chronological logs of design & testing progress
+- [`final_report.md`](docs/final_report.md) — scientific paper detailing the project
+
+
+## Project Status
+
+> ⚠️ **This project is currently in course.**  
+> Final submission deadline: **June 2025**  
+> Demo video available on YouTube (link in final report).
+
+
+## Team and Affiliation
+
+**Contributors:**
+- Arun Sharma  
+- Pau Domínguez Ruiz  
+- Gerard Souto Eslava  
+- Chengjie Peng Lin  
+
+**Supervision:**  
+Prof. Fernando L. Vilariño Freire  
+Prof. Carlos G. Calvo  
+Prof. Vernon S. Albayeros Duarte
 
 **Affiliation:**  
+Bachelor’s in Computer Engineering  
 Universitat Autònoma de Barcelona (UAB)  
-Bachelor's Degree in Computer Engineering  
-Course: Robotics, Language and Planning (Spring 2025)  
-Supervised by Prof. Fernando Luis Vilariño Freire, Prof. Carlos Garcia Calvo, Prof. Vernon Stanley Albayeros Duarte  
-In collaboration with the Open Labs of the School of Engineering (*Laboratoris d’Innovació Oberta, UAB*)
-
-## 📄 Documentation
-
-See [`/docs/`](./docs) for:
-- Project decisions → [`decisions.md`](./docs/decisions.md)
-- Daily logs → [`/logs/`](./docs/logs/)
-- Final report draft → [`final_report.md`](./docs/final_report.md)
-
-## 🛠️ Project Status
-
-> **Status:** 🟡 *In Progress*  
-Final delivery planned for **June 2025**.
+Open Labs — *Laboratoris d’Innovació Oberta, Escola d’Enginyeria, UAB*
 
 
-## 📜 License
+## Acknowledgment
 
-_This academic project is for educational purposes only._ License terms will be defined upon completion (Probably MIT).
+The authors gratefully acknowledge:
+- The instructors and Open Labs technical staff at UAB
+- Maxon Group Spain for motor specification support
+- Robot Electronics for help with motor driver debugging
+
+The name **Bose** is inspired by the *Bose–Einstein distribution*, metaphorically representing state synchronization across heterogeneous environments.
+
+
+## License
+
+This academic repository is for educational and research purposes only.  
+A formal open-source license will be attached after final evaluation.  
+Expected: MIT or CC BY-SA.
