@@ -182,6 +182,7 @@ A 2D occupancy map is built incrementally and used for localization and planning
 ## Hardware Components
 
 ### Tri-Helix Wheels
+![Bose Hero Image](Media/WheelDiagram.jpg)
 
 Laser-cut, three-lobed wheels for continuous stair climbing. Driven by Maxon motors with 785:1 gear reduction.
 
