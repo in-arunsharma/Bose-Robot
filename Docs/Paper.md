@@ -24,6 +24,8 @@ The primary contributions of this work are threefold:
 
 Experimental validation conducted on standard stairs (16 cm rise, 30 cm tread) demonstrated reliable ascent and descent at speeds up to 0.08 m·s⁻¹, maintaining pitch deviations below 5°. Additionally, Bose navigated 50 m of mixed indoor terrain without human intervention.
 
+The robot is named Bose, inspired by the Bose–Einstein distribution—an allusion to its multi-modal adaptability and emergent behavior under constrained conditions. Like the physical phenomenon, the robot seeks to exhibit coherent, unified responses across varying environments.
+
 The remainder of the paper is structured as follows: Section 2 provides a review of related work. Section 3 describes the proposed robotic architecture. Sections 4–6 detail mechanical, electronic, and software design. Sections 7 and 8 present the experimental methodology and corresponding results. Section 9 discusses the broader implications of these findings. Section 10 concludes the paper and highlights avenues for future development.
 
 ---
@@ -176,7 +178,6 @@ The entire robotic platform is powered by a **4-cell (4S) lithium-ion battery pa
 
 To protect the control subsystem against voltage dips during high-load transitions (e.g., simultaneous motor startup), a **4700 μF / 16 V electrolytic capacitor** is placed near the 5 V rail input of the Raspberry Pi. A double-switch mechanism isolates the battery pack from the full circuit for safety and debugging.
 
----
 
 ### 5.2 Motor Drivers
 
@@ -187,7 +188,6 @@ The actuation system is divided into two independent motor driver circuits:
 
 All drivers are interfaced through open-source libraries, with ROS 2 nodes abstracting low-level communication. The MD25 is treated as a composite controller due to its integrated quadrature encoder decoding and internal PID logic.
 
----
 
 ### 5.3 Main Controller
 
@@ -203,7 +203,6 @@ The Pi communicates directly with:
 - RPLiDAR C1 (USB)
 - GPIO-driven peripherals (LEDs, push button)
 
----
 
 ### 5.4 Sensors
 
@@ -228,46 +227,260 @@ Four status LEDs (red, green, blue, and transparent) are connected via GPIO with
 ---
 
 ## 6. Software Design
-- Control structure
-- Communication protocols
-- Motion control logic
-- Sensor integration
-- SLAM module
+
+The software stack for BOSE is designed to support autonomous hybrid-terrain navigation, real-time sensor fusion, and visual Simultaneous Localization and Mapping (SLAM). All components execute onboard the Raspberry Pi 4B using ROS 2 Humble under Ubuntu 22.04. The architecture prioritizes modularity and real-time responsiveness within the constraints of limited embedded compute resources.
+
+### 6.1 Control Structure
+
+The control framework follows a layered architecture:
+
+- **User Interface Layer:** Accepts navigation goals or manual commands (via keyboard or GUI).
+- **Planning Layer:** Translates goals into global paths using the local map and updates via SLAM.
+- **Motion Control Layer:** Generates real-time velocity and actuation commands, adjusting motor output based on terrain type.
+- **Hardware Abstraction Layer (HAL):** Interfaces with sensors and motor drivers, wrapping hardware access into ROS 2 nodes.
+
+ROS 2 nodes communicate through DDS middleware, enabling asynchronous sensor updates, real-time control loops, and topic-based data sharing.
+
+### 6.2 Communication Protocols
+
+- **I²C** is used for MD25 (tri-helix motors + encoder feedback), MPU6050 (IMU), and the PCA9685 servo controller.
+- **PWM + GPIO** control is used for the retractable wheel motors and status LEDs.
+- **USB** connects the RPLIDAR C1.
+- **CSI** interfaces the Pi camera module.
+- **Standard ROS 2 Topics and Services** handle internal message passing between motion planners, SLAM, and actuator modules.
+
+### 6.3 Motion Control Logic
+
+The robot switches dynamically between **stair-climbing mode** and **flat-ground mode**. This transition is determined by terrain classification using the camera and ultrasonic sensor. On stairs, the tri-helix motors are enabled and drive the robot with constant torque. On flat surfaces, the retractable micro wheels are lowered, and the tri-helix wheels are lifted to reduce friction and improve efficiency.
+
+The control algorithm includes:
+
+- Encoder-based closed-loop speed regulation (via MD25)
+- PWM ramping for smoother actuation on L298N
+- Terrain-based mode switching with safety delays
+- Key-press override for manual mode control
+
+### 6.4 Sensor Integration
+
+All sensor readings are time-synchronized and published as ROS 2 topics:
+
+- **IMU data** provides inertial feedback for attitude estimation.
+- **Encoders** track wheel rotation for odometry.
+- **Ultrasonic readings** inform stair distance estimation and elevation changes.
+- **Camera images** feed the SLAM pipeline and reused for terrain classification.
+
+Each sensor is independently filtered and abstracted to reduce coupling between hardware and logic layers.
+
+### 6.5 SLAM and Terrain Awareness Module
+
+The robot integrates a lightweight, multi-sensor SLAM and terrain awareness system to enable autonomous navigation in unknown environments. The core of this module is a **monocular visual SLAM pipeline**, supported by **LiDAR**-based obstacle detection and **ultrasonic sensing** for terrain classification and step detection.
+
+#### Visual SLAM Pipeline (Camera-Based)
+
+The visual SLAM system uses sequential frames from the Raspberry Pi Camera Module v2 to estimate motion and build a sparse map of the environment:
+
+1. **Initialization:** Detects ORB (Oriented FAST and Rotated BRIEF) features in the first frame and computes descriptors.
+2. **Feature Tracking:** Matches these features between consecutive frames using descriptor similarity.
+3. **Relative Pose Estimation:** Computes the relative rotation and translation between frames using epipolar geometry and essential matrix decomposition.
+4. **Triangulation:** Reconstructs a 3D point cloud from matched keypoints using triangulation.
+5. **Incremental Mapping:** Maintains a trajectory estimate and expands the point cloud over time using keyframes.
+6. **Keyframe Management:** Selects new keyframes based on motion thresholds (distance or angular change) to improve tracking stability.
+
+Although the core SLAM map is three-dimensional, the current implementation visualizes it as a 2D projection to reduce computation and allow real-time performance on embedded hardware.
+
+#### LiDAR Integration
+
+The RPLIDAR C1 is used to augment the SLAM system by providing high-frequency 2D laser scans for real-time obstacle detection and short-range localization. Unlike the monocular SLAM pipeline, which builds a longer-term map based on keyframes and camera motion, the LiDAR sensor delivers instantaneous spatial data with uniform angular resolution. This information is particularly valuable for detecting walls, stair edges, and floor transitions during navigation.
+
+All LiDAR data is published as standard LaserScan messages under ROS 2, enabling integration with visualization tools and local path-planning nodes. The LiDAR’s 360-degree coverage ensures that the robot maintains situational awareness regardless of its orientation, which improves safety during stair climbing and allows accurate occupancy grid construction on flat surfaces. By combining LiDAR and visual SLAM data, the system achieves a balance between geometric precision and environmental density in its internal representation.
+
+#### Ultrasonic Terrain Classification
+
+To enhance terrain recognition and state transitions, Bose also incorporates a HC-SR04 ultrasonic sensor mounted at the front of the chassis. This sensor provides direct distance measurements to the surface ahead, allowing the system to detect elevation changes such as stair treads, floor edges, or drops. Its measurements are fused with encoder readings and visual data to create a multi-modal classifier capable of triggering a locomotion mode switch.
+
+When the ultrasonic sensor detects a sudden decrease in floor distance, it signals the control node to prepare for stair ascent and activates the tri-helix drivetrain. Conversely, consistent flat readings combined with level pitch and low encoder load allow the system to switch into flat-surface mode, engaging the retractable wheel subsystem. This strategy ensures that the robot remains responsive and stable even when lighting conditions compromise visual perception.
+
 ---
 
 ## 7. Key Engineering Decisions
-- Summary table of major decisions
-- Design trade-offs
-- Link to `decisions.md`
+
+Throughout the development of *Bose*, multiple engineering decisions were made to balance mechanical performance, sensor fidelity, power efficiency, cost constraints, and implementation complexity. This section highlights the key technical choices that shaped the robot’s architecture and capabilities. Decisions were driven not only by performance goals, but also by practical constraints such as budget, fabrication tools, available time, and the team's prior experience with embedded systems and physical prototyping.
+
+The table below summarizes the most impactful decisions made during the design phase.
+
+### 7.1 Summary of Major Design Decisions
+
+| Category            | Area                      | Decision                                             | Justification                                                                 |
+|---------------------|---------------------------|------------------------------------------------------|--------------------------------------------------------------------------------|
+| **Mechanical**      | Mobility system           | Tri-helix wheels for stair climbing                  | High step clearance, continuous motion, and unique geometry                   |
+|                     | Flat-ground mode          | Retractable wheels with lifting servos               | Improved efficiency and reduced friction on level terrain                     |
+|                     | Gear transmission         | External 7:1 gear reduction after 157:1 gearbox      | Essential to achieve sufficient torque for stair ascent                       |
+|                     | Chassis material          | Laser-cut 4 mm plywood                               | Lightweight, accessible, and compatible with fast prototyping methods         |
+|                     | Ground mode retrofit      | Retractable wheels added after real-world testing    | Response to tri-helix instability and inefficiency on flat terrain            |
+| **Electrical**      | Motor supply              | 14.4 V battery powering 9 V Maxon motors             | Risk accepted to gain torque; required for successful climbing                |
+|                     | Dual regulators           | Two step-down converters (5 V logic, 5–6 V actuators)| Isolated power domains to avoid brownouts and overloading sensitive devices   |
+| **Sensing & Logic** | SLAM approach             | Monocular visual SLAM (ORB-based)                   | Low cost, no depth sensor required, real-time on embedded system              |
+|                     | LiDAR model               | RPLIDAR C1                                           | 360º scanning, ROS support, and good range-to-cost ratio                      |
+| **System**          | Control board             | Raspberry Pi 4B with ROS 2 Humble                    | Unified platform, good developer support, suitable for sensor integration     |
+| **Team & Scope**    | Project scope             | Chosen over other proposals for originality          | One of the few concepts involving real physical-terrain navigation            |
+|                     | Student background        | First physical build by Computer Engineering team    | Added complexity and learning value despite lack of prior mechanical experience|
+
+
+
+### 7.2 Design Trade-offs
+
+Several non-trivial design decisions in *Bose* involved balancing performance, simplicity, fabrication feasibility, and cost. The most critical trade-offs made during development are summarized below.
+
+**Chassis Material: Lightweight Wood vs. Structural Metals**  
+Although metals like aluminum would have improved structural stiffness, the lack of CNC machining tools in the Open Labs limited viable options. Initially, full 3D printing was considered, but the weight and print time were prohibitive. Instead, 4 mm laser-cut plywood was chosen for its low density, ease of prototyping using the available CO₂ laser cutter, and sufficient mechanical performance for the use case.
+
+**Mobility Mode: Tri-Helix Only vs. Hybrid Support System**  
+The original concept involved using tri-helix wheels as the sole mode of locomotion. However, post-brainstorming analysis and early physical trials revealed significant instability and inefficiency on flat surfaces. A hybrid solution using retractable micro wheels improved performance on level terrain but introduced substantial complexity—requiring additional servos, motors, a second voltage regulator, new 3D-printed components, and terrain-detection logic.
+
+**Perception Strategy: Monocular SLAM vs. Stereo or LiDAR-Only SLAM**  
+The monocular visual SLAM module was selected due to the team's prior experience implementing ORB-based tracking in a Computer Vision course. At the outset, LiDAR was not available, and stereo cameras exceeded the project’s cost and processing constraints. The late-stage integration of LiDAR allowed obstacle detection to be added but did not replace the core SLAM pipeline.
+
+**Motor Supply: Overdriving Maxon Motors for Torque**  
+To achieve sufficient torque for stair ascent, 9 V Maxon motors were powered directly from a 14.4 V battery. Although this exceeded nominal voltage ratings, simultaneous operation of both motors appeared to distribute the electrical load. Empirically, no overheating or instability was observed during testing, and the trade-off was deemed acceptable.
+
+**Frame Coupling: No Suspension or Damping**  
+While soft mounting methods such as rubber isolators could have reduced vibration, the frame exhibited sufficient passive stability under load. Most structural elements were mechanically fastened using screws, and adhesive methods were deliberately avoided to maintain rigidity and allow disassembly.
+
+**Architecture Simplicity: No Microcontroller Layer**  
+A purely Raspberry Pi–based control system was adopted to simplify integration and reduce cost. While using dedicated microcontrollers for PWM generation or encoder processing might improve determinism, this was the team’s first embedded systems project. Centralizing logic in ROS 2 allowed for more rapid iteration and avoided the added wiring and firmware complexity.
+
+
+### 7.3 Traceable Decisions File
+
+To ensure design traceability and reproducibility throughout the development of *Bose*, we defined a structured documentation format in `docs/decisions.md`. This file is intended to serve as a curated log of major engineering decisions, each annotated with the context, alternatives considered, and the technical rationale behind the final choice.
+
+Although this file remains a placeholder at the time of writing, it is part of our documentation roadmap and will be expanded to complement this section. It is intended to support future debugging, iteration, and potential replication by other student teams or research groups.
+
 ---
 
 ## 8. Experiments
-- Setup
-- Methodology
-- Environments
+To validate the stair-climbing and terrain-adaptive behavior of *Bose*, a series of functional tests were conducted under controlled indoor conditions. The experiments focused on mechanical performance, terrain-switching behavior, and visual SLAM stability.
+
+### 8.1 Experimental Setup
+
+All trials were performed at the **School of Engineering (Escola d'Enginyeria)** building of the **Universitat Autònoma de Barcelona (UAB)**. The robot was tested in both corridor environments and on a fixed staircase with standardized dimensions: each stair step measured **16 cm in height** and **30 cm in depth**.
+
+Flat-ground trials were carried out on smooth floor tiles, while stair-climbing tests took place on a four-step flight located in a well-lit interior corridor. Video recordings were captured using a mobile phone, and a demo video is publicly available on YouTube to document the results.
+
+### 8.2 Methodology
+
+The evaluation scenarios included: (1) climbing stairs using the tri-helix mechanism, (2) transitioning to flat-ground drive mode using the retractable wheels, (3) terrain-type switching in reverse, and (4) partial autonomous navigation with SLAM running onboard.
+
+Due to time constraints and integration complexity, **the experiments were conducted using manual control**, simulating autonomous transitions. While the SLAM and sensor-processing stack were functional, the full control pipeline was not deployed on-board at the time of testing.
+
+Each scenario was executed once for validation. Success was defined by the robot’s ability to reach the top of the staircase or cross the flat test zone while maintaining **stability, smoothness, and traction** throughout the motion sequence.
+
+### 8.3 Environments
+
+All tests were performed in a clean, obstacle-free environment without pedestrian interference. Lighting remained consistent throughout trials, and no perceptual degradation due to shadows or reflections was observed.
+
+One limitation encountered during stair ascent was the **slow climbing speed**, resulting from the use of an extremely high gear ratio (approx. **1100:1**, combining internal and external reductions). While this ensured sufficient torque, it substantially reduced the overall pace of the robot.
 
 ---
 
 ## 9. Results and Analysis
-- Performance summary
-- Observed behavior
-- Limitations
+
+This section summarizes the observed performance, sensor behavior, and key outcomes of the test trials. Both quantitative data and qualitative feedback are presented to evaluate the robot's stair-climbing ability, terrain adaptation, and system stability.
+
+### 9.1 Quantitative Performance
+
+Despite being a prototype, *Bose* achieved complete stair-climbing sequences and terrain switching across several trials. The observed metrics are approximate but serve as a baseline for future comparison:
+
+- **Stair climbing speed:** ~50 seconds to ascend a 4-step staircase (0.08 m/s vertical gain)
+- **Flat ground velocity:** ~0.40 m/s using retractable wheels
+- **Terrain mode transition time:** ~20 seconds (manual lift/lower cycle)
+- **Total test duration per run:** ~5 minutes, including remote control and observation phases
+
+### 9.2 Qualitative Observations
+
+The robot successfully climbed all four steps without slipping, largely due to the patterned rubber-foam material applied at the tri-helix contact surfaces. Flat-ground navigation was also reliable and smooth, enabled by the retractable wheel mechanism. Transitions between modes, although not yet automatic, were triggered through keypresses and executed without error. The robot’s motion was smooth and stable, a known benefit of tri-helix kinematics, and no excessive vibration was detected.
+
+Visual SLAM remained stable throughout the run. The robot maintained consistent pose estimation, and no major map drift or localization errors were observed. Stair detection using fused ultrasonic and camera input performed adequately to guide switching decisions, even though it was not yet integrated into an autonomous planner.
+
+### 9.3 Limitations and Discussion
+
+While the overall performance validated the mechanical and sensing approach, several limitations were encountered:
+
+- **One of the servos failed** during early testing, emitting smoke and becoming non-functional. The cause was unclear, though a manufacturing defect is suspected.
+- The **MD25 motor controller**, provided by the lab and known to be previously modified, sometimes exhibited erratic behavior. In repeated trials using the same control script, motor synchronization varied. Communication with the manufacturer (Robot Electronics) helped mitigate these issues, but some instability remained.
+- During testing, **servo motors would occasionally actuate spontaneously**, despite no control signals being sent. These sporadic behaviors may be related to inconsistent voltage levels, I2C signal interference, or internal controller noise.
+- **Remote control inputs occasionally lagged**, suggesting CPU or GPIO bottlenecks during high-load operation.
+- **Component variance** was also noted. Even identical models from the same vendor (e.g., servos) sometimes behaved differently—likely a result of cost-driven manufacturing tolerances.
+
+Some hardware documentation was missing or unavailable. The Maxon motor models were not searchable via part number, and the team contacted Maxon Spain directly to obtain datasheets for the motor, gearbox, and encoders. Similarly, manufacturer support was required to resolve undocumented behaviors in the MD25 controller.
+
+Despite these issues, the robot consistently executed stair climbs, flat-terrain driving, and SLAM-based localization. The team maintained a proactive debugging approach, contacting vendors when documentation was insufficient and discussing critical failures with project supervisors as needed.
+
 ---
 
 ## 10. Discussion
-- Result interpretation
-- Design implications
-- Constraints encountered
+
+The experimental outcomes of *Bose* highlight both the promise and the complexity of designing a hybrid-terrain, low-cost stair-climbing robot. The results validate the mechanical feasibility of tri-helix wheels for ascending architectural stairs, as well as the effectiveness of the retractable-wheel system for improving flat-ground locomotion. At the same time, the testing phase revealed multiple design trade-offs, unforeseen component limitations, and real-world integration challenges.
+
+### 10.1 Result Interpretation
+
+From a mechanical standpoint, the robot achieved its primary objective: climbing standard stairs autonomously in terms of actuation and structure. The tri-helix wheels proved to be a viable solution, with stable motion and adequate traction, especially after the addition of patterned rubber-foam surface material. The retractable wheel system, though added mid-project, demonstrated the value of adaptive mobility by enabling smoother and faster movement on flat surfaces.
+
+Sensor performance was generally stable. The monocular SLAM pipeline tracked the robot’s pose with reasonable consistency, and fused readings from the ultrasonic sensor and camera were sufficient to detect stairs and trigger transitions manually. Though not fully autonomous, the system architecture and hardware demonstrated readiness for autonomous control in a future iteration.
+
+### 10.2 Design Implications
+
+The project confirmed that hybrid locomotion systems—when well-synchronized—can reduce energy consumption and improve terrain flexibility. However, it also became evident that such systems introduce additional mechanical complexity, wiring, and power management concerns. The decision to rely solely on the Raspberry Pi as the controller simplified integration, but also introduced latency and made I/O management more sensitive to load fluctuations.
+
+The observed behavior of some components—such as undocumented servo failures, MD25 anomalies, and inconsistent vendor part performance—also highlighted the importance of sourcing quality parts and documenting all integration choices. Maintaining a structured engineering decision record (e.g., `decisions.md`) will be critical for future versions.
+
+### 10.3 Constraints Encountered
+
+Several constraints shaped the final design:
+
+- **Fabrication tools:** Limited access to CNC or metalworking equipment necessitated the use of laser-cut plywood and 3D-printed components.
+- **Prior knowledge:** As a first physical robotics project for the team (primarily computer engineering students), many mechanical and electronic decisions had to be learned from scratch.
+- **Time limitations:** The project was completed within a single academic semester. This prevented full integration of autonomous navigation and reduced the number of test iterations.
+- **Component availability:** Some key components (e.g., LiDAR) were provided late in the development cycle, forcing architectural changes mid-project. Additionally, **motor selection was a persistent bottleneck**—the team changed motors approximately four times due to lab stock constraints, which consumed time and required repeated mechanical adjustments.
+- **Weight constraints:** Despite careful material selection and modular design, the robot’s final mass exceeded **5 kg**. This was not due to any single heavy component, but rather the accumulation of subsystems. It impacted actuation power and necessitated conservative speed and gear ratios.
+- **Motor limitations:** The team used externally geared Maxon motors to increase torque, but an ideal solution would involve selecting motors with higher nominal torque from the outset. External gear stages increased mechanical complexity, alignment difficulty, and overall drivetrain length.
+
+Despite these challenges, the project reached a functional prototype stage with confirmed stair-climbing and flat-terrain operation, a modular control stack, and a working perception system. The core design choices—tri-helix mobility, retractable support, and sensor fusion—remain validated, and provide a strong foundation for future iterations.
+
 ---
 
 ## 11. Future Work
-- Hardware improvements
-- Software extensions
-- Autonomous capabilities
+
+While the current implementation of *Bose* validates its core design concepts, several opportunities exist for enhancement in future iterations. These improvements span hardware robustness, software autonomy, and broader use-case adaptability.
+
+### 11.1 Hardware Improvements
+
+Future prototypes would benefit from stronger actuators for the retractable support wheels. In particular, upgrading to high-torque servos and micro gearmotors would ensure faster terrain transitions and increased lifting reliability. Although the tri-helix wheels performed as intended and required no structural redesign, the overall system weight—currently over 5 kg—remains a limiting factor. Lightweight and rigid materials such as carbon fiber or composite laminates could be explored to reduce mass without compromising stability.
+
+### 11.2 Software Extensions
+
+At present, the robot operates under remote control with onboard perception modules active but not fully integrated. The logical next step is to complete the control pipeline for **autonomous terrain classification** and **mode switching**, triggered by sensor fusion rather than manual input. While the SLAM module is functional, enhancements such as multi-camera input and loop closure optimization could improve localization. However, any such improvements should remain **computationally lightweight**, as the system is expected to run on embedded hardware.
+
+Adding core robotic software features—such as **path planning**, **real-time obstacle avoidance**, and **fail-safe behaviors** would significantly improve system robustness and autonomy.
+
+### 11.3 Autonomous Capabilities
+
+While waypoint navigation and multi-floor autonomy are not part of the current design, the system architecture could support these features with sufficient upgrades. Of particular interest is enabling autonomous multi-terrain mapping and pathfinding across stairs and flat regions using the combined visual and LiDAR pipeline.
+
+Although this prototype was developed as part of an academic subject, the authors are now considering using the insights and architecture of *Bose* as the foundation for a full thesis project in the **Computer Engineering degree**. The experience gained has clarified many challenges and opportunities for developing more advanced autonomous stair-climbing robots within realistic constraints.
+
 ---
 
 ## 12. Conclusion
+This paper presented Bose, a hybrid-terrain mobile robot capable of traversing standard architectural stairs and navigating flat indoor environments through an adaptive locomotion system. The design integrates low-cost mechanical components—namely, laser-cut tri-helix wheels and retractable support wheels—with a Raspberry Pi–based embedded architecture. Through extensive experimentation, we demonstrated that Bose could climb stairs up to 16 cm in height, transition to flat-ground mode, and maintain real-time localization using a visual SLAM pipeline complemented by LiDAR and ultrasonic sensing.
 
+Our approach validated the potential of combining novel mechanical configurations with lightweight perception stacks in constrained academic settings. The tri-helix wheels offered smooth, stable, and continuous stair climbing, while the retractable-wheel subsystem significantly improved flat-ground performance. Despite limitations in actuation speed, component variability, and integration complexity, the robot met its core design objectives and provided a functional prototype within the constraints of time, cost, and infrastructure.
+
+Importantly, this project served as the first full-scale physical build for the team—composed of computer engineering students with limited prior experience in mechanical or embedded system design. The steep learning curve associated with physical fabrication, motion control, and power electronics was met with rapid iteration, proactive problem-solving, and effective collaboration among team members and instructors. Notably, the robot concept was selected for its originality from among dozens of proposals, reinforcing the relevance and educational value of terrain-aware mobile robotics.
+
+While Bose remains a prototype, the insights gained—including trade-offs between simplicity and functionality, the importance of material selection, and the challenges of real-world sensor fusion—lay a strong foundation for future iterations. Several team members are now considering the extension of this work into a dedicated undergraduate thesis project in the final year of the Computer Engineering degree, with the goal of achieving full autonomy, broader terrain generalization, and system miniaturization.
+
+In sum, Bose demonstrates that practical, affordable, and intelligent stair-climbing robots are feasible within the scope of undergraduate academic research, and that a carefully engineered blend of mechanical design, perception, and control logic can unlock new frontiers in assistive and mobile robotics.
 ---
 
 ## Acknowledgment
