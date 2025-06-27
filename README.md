@@ -4,7 +4,7 @@
 
 ---
 
-![Bose Hero Image](docs/images/bose_hero.jpg)
+![Bose Hero Image](Media/BoseOnStair.png)
 
 ---
 
