@@ -104,16 +104,17 @@ pip install adafruit-circuitpython-pca9685 smbus2 numpy opencv-python rplidar-ro
 
 ```
 ├── docs/
-│   └── images/            # Photos, schematics, SLAM maps
+│   └── logs/            # Logs of each working day
+|   └── Paper.md         #IEEE Paper of the robot
 ├── hardware/
-│   ├── fusion360/         # CAD models, STL files
-│   └── wiring_diagrams/   # Fritzing schematics
+│   ├── Circuit/         # Fritzing schematics
+│   └── DXF/             # 2D Drawings
+|   └── STL/             # CAD models, STL files
 ├── software/
-│   ├── control/           # Python control scripts
-│   ├── slam/              # Visual + LiDAR SLAM
-│   └── ros2_ws/           # ROS 2 nodes
-├── scripts/
-│   └── interactive_control.py
+│   ├── raspberry4b-autonomous-lidar/           # Autonomus Code using RPLiDAR C1
+│   ├── raspberry4b-remote/              # Manual Control Script
+│   └── visual-slam/           # Visual SLAM Python Implementation
+├── Media/                 # Photos and videos 
 ├── README.md
 └── decisions.md           # Traceable engineering decisions
 ```
