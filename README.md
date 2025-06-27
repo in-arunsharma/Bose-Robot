@@ -55,9 +55,9 @@
 
 | Stair Climb | Terrain Switch | Visual SLAM |
 |------------|----------------|-------------|
-| ![Stair Climbing](docs/images/stair_climb.gif) | ![Terrain Switching](docs/images/switch_mode.gif) | ![SLAM Map](docs/images/slam_map.png) |
+| ![Stair Climbing](Media/Prototype.jpeg) | ![Terrain Switching](docs/images/switch_mode.gif) | ![SLAM Map](docs/images/slam_map.png) |
 
-> See the full [demo video on YouTube](https://youtube.com/your_video_url_here)
+> See the full [demo video on YouTube](https://youtu.be/-nvnbL4hpCc)
 
 ---
 
@@ -65,7 +65,7 @@
 
 ### Block Diagram
 
-![System Architecture](Media/system_block_diagram.png)
+![System Architecture](Media/Software.png)
 
 ### Hardware Stack
 
