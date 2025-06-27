@@ -69,7 +69,7 @@
 
 ### Hardware Stack
 
-![Bose Hero Image](Media/RB Pi 4 .jpeg)
+![Bose Hero Image](Media/RPi4.jpeg)
 
 - Raspberry Pi 4B (4 GB RAM)
 - MD25 Motor Controller (tri-helix wheels)
