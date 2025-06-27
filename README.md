@@ -219,7 +219,7 @@ All firmware-free and open hardware. See `LICENSE`.
   title       = {Bose: A Stair-Climbing Robot for Hybrid Terrain Navigation},
   year        = {2025},
   institution = {Universitat Autònoma de Barcelona},
-  note        = {Bachelor’s Course in Robotics, Language and Planning}
+  note        = {Bachelor’s Course in Computer Engineering}
 }
 ```
 
