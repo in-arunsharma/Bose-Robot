@@ -55,7 +55,7 @@
 
 | Stair Climb | Terrain Switch | Visual SLAM |
 |------------|----------------|-------------|
-| ![Stair Climbing](Media/Prototype.jpeg) | ![Terrain Switching](Media/RetractableWheel.png) | ![SLAM Map](docs/images/slam_map.png) |
+| ![Stair Climbing](Media/Prototype.jpeg) | ![Terrain Switching](Media/RetractableWheel.png) | ![SLAM Map](Media/SLAMNavigation.png) |
 
 > See the full [demo video on YouTube](https://youtu.be/-nvnbL4hpCc)
 
