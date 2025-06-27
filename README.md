@@ -8,7 +8,30 @@
 
 ---
 
-## 🚀 Overview
+## Table of Contents
+
+- [Overview](#overview)
+- [System Architecture](#system-architecture)
+- [Repository Structure](#repository-structure)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Wiring and Setup](#wiring-and-setup)
+- [How to Use](#how-to-use)
+  - [Manual Control](#manual-control)
+  - [SLAM and Navigation](#slam-and-navigation)
+- [Mapping and SLAM](#mapping-and-slam)
+- [Hardware Components](#hardware-components)
+  - [Tri-Helix Wheels](#tri-helix-wheels)
+  - [Retractable Wheels](#retractable-wheels)
+  - [Support Tail](#support-tail)
+- [Reproducibility](#reproducibility)
+- [Citation](#citation)
+- [Acknowledgments](#acknowledgments)
+- [License](#license)
+
+---
+
+## Overview
 
 **Bose** is a hybrid-terrain mobile robot capable of transitioning between stair-climbing and flat-ground modes through a custom tri-helix wheel system and retractable support wheels. Built around a Raspberry Pi 4 and designed for reproducibility and education, Bose combines real-time terrain classification, SLAM, and autonomous control in a lightweight, low-cost platform.
 
@@ -16,29 +39,29 @@
 
 ---
 
-## 🎯 Key Features
+## Key Features
 
-- ✅ Tri-helix wheel mechanism for stair traversal (up to 20 cm rise)
-- ✅ Retractable micro wheels for efficient flat-ground navigation
-- ✅ Real-time 2D SLAM with RPLIDAR C1 and monocular vision
-- ✅ Terrain classification with ultrasonic sensor + camera
-- ✅ Fully embedded system: runs on Raspberry Pi 4B (no external microcontroller)
-- ✅ Modular, laser-cut chassis and 3D-printed mounts
-- ✅ Reproducible architecture with open-source hardware and software
+- Tri-helix wheel mechanism for stair traversal (up to 20 cm rise)
+- Retractable micro wheels for efficient flat-ground navigation
+- Real-time 2D SLAM with RPLIDAR C1 and monocular vision
+- Terrain classification with ultrasonic sensor + camera
+- Fully embedded system: runs on Raspberry Pi 4B (no external microcontroller)
+- Modular, laser-cut chassis and 3D-printed mounts
+- Reproducible architecture with open-source hardware and software
 
 ---
 
-## 📸 Media & Demos
+## Media & Demos
 
 | Stair Climb | Terrain Switch | Visual SLAM |
 |------------|----------------|-------------|
 | ![Stair Climbing](docs/images/stair_climb.gif) | ![Terrain Switching](docs/images/switch_mode.gif) | ![SLAM Map](docs/images/slam_map.png) |
 
-> 🎥 See the full [demo video on YouTube](https://youtube.com/your_video_url_here)
+> See the full [demo video on YouTube](https://youtube.com/your_video_url_here)
 
 ---
 
-## 🧱 System Architecture
+## System Architecture
 
 ### Block Diagram
 
@@ -62,11 +85,13 @@
 
 ## 🛠️ Build Instructions
 
-### 📦 Installation Requirements
+### Requirements
 
 - Raspberry Pi 4B with Ubuntu 22.04
 - ROS 2 Humble
 - Python 3.10+
+- Hardware: RPLIDAR C1, HC-SR04, MPU6050, PCA9685, MG996R servos, Maxon motors, etc.
+
 
 Install dependencies:
 
@@ -75,7 +100,7 @@ sudo apt update && sudo apt install python3-pip
 pip install adafruit-circuitpython-pca9685 smbus2 numpy opencv-python rplidar-robotics
 ```
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 ├── docs/
@@ -95,17 +120,18 @@ pip install adafruit-circuitpython-pca9685 smbus2 numpy opencv-python rplidar-ro
 
 ---
 
-## 🔌 Wiring and Setup
+## Wiring and Setup
 
+![BoseElectricCircuit](Media/Circuit.png)
 See `hardware/wiring_diagrams/raspberry_pi_wiring.pdf` for pinout.
 
-> 🛡️ **Tip:** Use a 4700 μF capacitor near the Pi 5V rail to prevent brownouts during motor actuation.
+> **Tip:** Use a 4700 μF capacitor near the Pi 5V rail to prevent brownouts during motor actuation.
 
 ---
 
-## 🕹️ Usage
+## How to Use
 
-### 🧪 Manual Control (Interactive Script)
+### Manual Control (Interactive Script)
 
 Run:
 
@@ -122,7 +148,7 @@ python3 scripts/interactive_control.py
 
 ---
 
-### 🤖 SLAM and Navigation (ROS 2)
+### SLAM and Navigation (ROS 2)
 
 Launch ROS nodes:
 
@@ -140,29 +166,36 @@ ros2 launch bose bringup.launch.py
 
 ---
 
-## 🔍 Components List
+## Mapping and SLAM
 
-| Component                | Description                                |
-|--------------------------|--------------------------------------------|
-| Raspberry Pi 4B          | Main controller                            |
-| MD25 Motor Driver        | Tri-helix wheels + encoders                |
-| L298N                    | Retractable wheel motors                   |
-| PCA9685                  | 16-channel servo controller                |
-| S13V30F5                 | 5V 3A buck-boost converter                 |
-| XL4015                   | Power to servos and support motors         |
-| HC-SR04                  | Ultrasonic sensor for stair detection      |
-| MPU6050                  | 6-DOF IMU                                  |
-| RPLIDAR C1               | 360º 2D LiDAR for SLAM                     |
-| Pi Camera v2             | Monocular vision                           |
-| MG996R                   | Servos for retractable wheels              |
-| Maxon 110055 + Gearbox   | Tri-helix motor system                     |
-| LEDs, push button        | Status and local control                   |
+Bose integrates:
 
-📄 Full datasheets in `docs/appendix_components.md`
+- ORB-based monocular SLAM (via Pi Camera)
+- 360º laser scanning (via RPLIDAR C1)
+- Terrain detection (ultrasonic + vision)
+
+A 2D occupancy map is built incrementally and used for localization and planning.
 
 ---
 
-## 🔁 Reproducibility
+## Hardware Components
+
+### Tri-Helix Wheels
+
+Laser-cut, three-lobed wheels for continuous stair climbing. Driven by Maxon motors with 785:1 gear reduction.
+
+### Retractable Wheels
+
+Pololu micro motors and MG996R servos enable flat-ground movement when the tri-helix wheels are lifted.
+
+### Support Tail
+
+A fixed rear extension adds stability on stairs without needing extra sensors or actuators.
+
+---
+
+
+## Reproducibility
 
 To reproduce the robot:
 
@@ -175,7 +208,7 @@ All firmware-free and open hardware. See `LICENSE`.
 
 ---
 
-## 👨‍🔬 Paper Citation
+## Citation
 
 **Arun Sharma**, **Pau Domínguez Ruiz**, **Gerard Souto Eslava**, **Chengjie Peng Lin**,  
 *“Bose: A Stair-Climbing Robot for Hybrid Terrain Navigation,”* Universitat Autònoma de Barcelona, 2025.
@@ -192,7 +225,7 @@ All firmware-free and open hardware. See `LICENSE`.
 
 ---
 
-## 🤝 Acknowledgments
+## Acknowledgments
 
 - Prof. Fernando L. Vilariño Freire  
 - Prof. Carlos G. Calvo  
@@ -202,11 +235,11 @@ All firmware-free and open hardware. See `LICENSE`.
 
 ---
 
-## 🪪 License
+## License
 
 This repository is licensed under the MIT License. See `LICENSE` for details.
 
-> 📬 For academic use, extension, or replication, please contact the authors or contribute via GitHub issues and pull requests.
+> For academic use, extension, or replication, please contact the authors or contribute via GitHub issues and pull requests.
 
 ---
 
